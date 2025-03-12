@@ -25,8 +25,7 @@ export class PermissionsService {
       );
     }
 
-    const permission = new this.permissionModel(assignPermissionDto);
-    return permission.save();
+    return this.permissionModel.create(assignPermissionDto);
   }
 
   async getPermissionsByCompany(companyId: string) {
