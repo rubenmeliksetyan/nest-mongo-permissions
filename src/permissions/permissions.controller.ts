@@ -13,6 +13,12 @@ import { PermissionsService } from './permissions.service';
 import { AssignPermissionDto } from './dto/assign-permission.dto';
 import { UsersService } from '../users/users.service';
 import { ProjectsService } from '../projects/projects.service';
+import {
+  ApiTags,
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+} from '@nestjs/swagger';
 
 interface JwtUserPayload {
   userId: string;
@@ -22,9 +28,10 @@ interface AuthenticatedRequest extends Request {
     userId: string;
   };
 }
-
-@UseGuards(JwtAuthGuard)
+@ApiTags('Permissions')
+@ApiBearerAuth()
 @Controller('permissions')
+@UseGuards(JwtAuthGuard)
 export class PermissionsController {
   constructor(
     private readonly permissionsService: PermissionsService,
@@ -33,6 +40,8 @@ export class PermissionsController {
   ) {}
 
   @Post('assign')
+  @ApiOperation({ summary: 'Assign a permission to a user' })
+  @ApiResponse({ status: 201, description: 'Permission assigned successfully' })
   async assignPermission(
     @Request() req: AuthenticatedRequest,
     @Body() assignPermissionDto: AssignPermissionDto,
@@ -68,7 +77,12 @@ export class PermissionsController {
     });
   }
 
-  @Get('company/:companyId')
+  @Get('company/:id')
+  @ApiOperation({ summary: 'Get permissions for a company' })
+  @ApiResponse({
+    status: 200,
+    description: 'Permissions retrieved successfully',
+  })
   async getPermissionsByCompany(@Param('companyId') companyId: string) {
     return this.permissionsService.getPermissionsByCompany(companyId);
   }

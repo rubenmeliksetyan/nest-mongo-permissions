@@ -2,13 +2,16 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Company, CompanyDocument } from './schemas/company.schema';
+import { CreateCompanyDto } from './dto/create-company.dto';
 
 @Injectable()
 export class CompaniesService {
-  constructor(@InjectModel(Company.name) private companyModel: Model<CompanyDocument>) {}
+  constructor(
+    @InjectModel(Company.name) private companyModel: Model<CompanyDocument>,
+  ) {}
 
-  async create(name: string, industry?: string): Promise<Company> {
-    const newCompany = new this.companyModel({ name, industry });
+  async create(createCompanyDto: CreateCompanyDto): Promise<Company> {
+    const newCompany = new this.companyModel(createCompanyDto);
     return newCompany.save();
   }
 
